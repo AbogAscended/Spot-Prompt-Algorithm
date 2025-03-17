@@ -27,7 +27,7 @@ class Generation():
 
         ]
         self.arm_movement = [
-        "wave", "shake", "fidget", "extend", "straighten", "gesture"
+        "wave", "shake", "fidget", "extend", "straighten", "gesture", "speak"
         ]
 
         self.vision_words = [
