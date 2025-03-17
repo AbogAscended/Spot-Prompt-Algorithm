@@ -46,3 +46,15 @@
 "spin", "flip", "fold", "unfold", "bend", "squeeze", "compress", "pinch", 
 "tweak", "align", "realign", "position", "rearrange", "manipulate", "operate", "control", 
 "pull", "push", "shift", "lower", "raise","toward"
+
+## Initial Prompts (Not Code / Wiki)
+self.commandPreferencer = 'Following is an input statement via voice given to you SPOT the robotic dog, please interpret the command ' \
+'as you would think that a person talking to SPOT the robotic dog which has four legs, an arm with a gripper on the back, as well as ' \
+'cameras on the front, side, and back would. Return only the flawless created code and nothing else. Input: ' + self.command
+
+self.codeGenerationPrompter = 'Using the following working code as your reference create working code which expertly follows the command and when done' \
+'makes sure the robot is safely sitting down with its arm put away. Make sure each method exists and is correct according to uses in the ROS2 SPOT API Wrapper.' \
+'Remember for full functionality make sure you are using the wrapper and its services.'
+
+self.visionPromter = 'Given that this command requires vision please use openCV as well as this pretrained bounding box object detection model which is compatible with openCV ' \
+'located on the computer at ...'
