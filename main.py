@@ -5,7 +5,9 @@ from nltk.stem import WordNetLemmatizer
 class Generation():
     def __init__(self, command):
         self.command = command
+
         self.lemmatizer = WordNetLemmatizer()
+
         self.basic_movement = [
         "go", "come", "walk", "run", "bring", "take", "deliver", "send", "escort", "return", 
         "head", "travel", "drive", "fly", "sail", "ride", "cycle", "climb", "jump", "skip", 
@@ -56,7 +58,7 @@ class Generation():
 
         self.commandPreferencer = 'Following is an input statement via voice given to you SPOT the robotic dog, please interpret the command ' \
         'as you would think that a person talking to SPOT the robotic dog which has four legs, an arm with a gripper on the back, as well as ' \
-        'cameras on the front, side, and back would. Input: ' + command + ' '
+        'cameras on the front, side, and back would. Return only the flawless created code and nothing else. Input: ' + self.command
 
         self.codeGenerationPrompter = 'Using the following working code as your reference create working code which expertly follows the command and when done' \
         'makes sure the robot is safely sitting down with its arm put away. Make sure each method exists and is correct according to uses in the ROS2 SPOT API Wrapper.' \
@@ -67,22 +69,32 @@ class Generation():
 
         with open('visionCode.txt', 'r') as file:
             self.visionCode = file.read()
+
         with open('armCode.txt', 'r') as file:
             self.armCode = file.read()
+
         with open('basicCode.txt', 'r') as file:
             self.movementCode = file.read()
+
         with open('generalCode.txt','r') as file:
             self.generalCode = file.read()
+
         with open('topicsWiki.txt','r') as file:
             self.topicsList = file.read()
+
         with open('actionsWiki.txt','r') as file:
             self.actionsList = file.read()
+
         with open('servicesWiki.txt','r') as file:
             self.servicesList = file.read()
-        self.categoryTuple = self.processCategory(self.command)
+
+        self.categoryTuple = self.processCategory()
+
+        self.prompt = self.promptBuilder()
 
 
-    def processCategory(self, command):
+    def processCategory(self):
+        command = self.command
         visionCount, armCount, basicCount = 0, 0, 0
         table = str.maketrans('', '', string.punctuation)
         result = command.translate(table)
@@ -95,7 +107,12 @@ class Generation():
         return (basicCount>0, armCount>0, visionCount>0)
 
 
-    def promptBuilder(self, categ, command):
-        bNeed, aNeed, vNeed = categ[0], categ[1], categ[2]
+    def promptBuilder(self):
+        bNeed, aNeed, vNeed = self.categoryTuple[0], self.categoryTuple[1], self.categoryTuple[2]
         code = self.visionCode * vNeed + self.movementCode * bNeed + self.armCode * aNeed + self.generalCode * (1 if bNeed+aNeed+vNeed==0 else 0)
+        if(vNeed == 1):
+            prompt = self.codeGenerationPrompter + code + self.visionPromter + self.commandPreferencer
+        else:
+            prompt = self.codeGenerationPrompter + code + self.commandPreferencer
+        return prompt 
  
