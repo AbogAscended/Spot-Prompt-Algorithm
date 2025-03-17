@@ -88,6 +88,8 @@ class Generation():
         with open('servicesWiki.txt','r') as file:
             self.servicesList = file.read()
 
+        self.wikiDump = self.actionsList + self.servicesList + self.topicsList
+
         self.categoryTuple = self.processCategory()
 
         self.prompt = self.promptBuilder()
@@ -111,8 +113,11 @@ class Generation():
         bNeed, aNeed, vNeed = self.categoryTuple[0], self.categoryTuple[1], self.categoryTuple[2]
         code = self.visionCode * vNeed + self.movementCode * bNeed + self.armCode * aNeed + self.generalCode * (1 if bNeed+aNeed+vNeed==0 else 0)
         if(vNeed == 1):
-            prompt = self.codeGenerationPrompter + code + self.visionPromter + self.commandPreferencer
+            prompt = self.codeGenerationPrompter + code + self.wikiDump + self.visionPromter + self.commandPreferencer
         else:
-            prompt = self.codeGenerationPrompter + code + self.commandPreferencer
+            prompt = self.codeGenerationPrompter + code + self.wikiDump + self.commandPreferencer
         return prompt 
+    
+    def returnPrompt(self):
+        return self.prompt
  
