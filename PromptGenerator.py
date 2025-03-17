@@ -102,7 +102,7 @@ class Generation():
         result = command.translate(table)
         words = command.lower().split()
         for word in words:
-            self.lemmatizer(word)
+            self.lemmatizer.lemmatize(word)
             if word in self.arm_movement: armCount+=1
             if word in self.basic_movement: basicCount+=1
             if word in self.vision_words: visionCount+=1
@@ -113,9 +113,9 @@ class Generation():
         bNeed, aNeed, vNeed = self.categoryTuple[0], self.categoryTuple[1], self.categoryTuple[2]
         code = self.visionCode * vNeed + self.movementCode * bNeed + self.armCode * aNeed + self.generalCode * (1 if bNeed+aNeed+vNeed==0 else 0)
         if(vNeed == 1):
-            prompt = self.codeGenerationPrompter + code + self.wikiDump + self.visionPromter + self.commandPreferencer
+            prompt = self.codeGenerationPrompter + '\n' + code + '\n' +self.wikiDump + '\n' + self.visionPromter + '\n' + self.commandPreferencer
         else:
-            prompt = self.codeGenerationPrompter + code + self.wikiDump + self.commandPreferencer
+            prompt = self.codeGenerationPrompter + '\n' + code + '\n' + self.wikiDump + '\n' + self.commandPreferencer
         return prompt 
     
     def returnPrompt(self):
