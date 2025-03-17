@@ -53,6 +53,18 @@ class Generation():
         "tweak", "align", "realign", "position", "rearrange", "manipulate", "operate", "control", 
         "pull", "push", "shift", "lower", "raise","toward"
         ]
+
+        self.commandPreferencer = 'Following is an input statement via voice given to you SPOT the robotic dog, please interpret the command ' \
+        'as you would think that a person talking to SPOT the robotic dog which has four legs, an arm with a gripper on the back, as well as ' \
+        'cameras on the front, side, and back would. Input: ' + command + ' '
+
+        self.codeGenerationPrompter = 'Using the following working code as your reference create working code which expertly follows the command and when done' \
+        'makes sure the robot is safely sitting down with its arm put away. Make sure each method exists and is correct according to uses in the ROS2 SPOT API Wrapper.' \
+        'Remember for full functionality make sure you are using the wrapper and its services.'
+
+        self.visionPromter = 'Given that this command requires vision please use openCV as well as this pretrained bounding box object detection model which is compatible with openCV ' \
+        'located on the computer at ...'
+
         with open('visionCode.txt', 'r') as file:
             self.visionCode = file.read()
         with open('armCode.txt', 'r') as file:
@@ -61,7 +73,14 @@ class Generation():
             self.movementCode = file.read()
         with open('generalCode.txt','r') as file:
             self.generalCode = file.read()
+        with open('topicsWiki.txt','r') as file:
+            self.topicsList = file.read()
+        with open('actionsWiki.txt','r') as file:
+            self.actionsList = file.read()
+        with open('servicesWiki.txt','r') as file:
+            self.servicesList = file.read()
         self.categoryTuple = self.processCategory(self.command)
+
 
     def processCategory(self, command):
         visionCount, armCount, basicCount = 0, 0, 0
@@ -74,13 +93,9 @@ class Generation():
             if word in self.basic_movement: basicCount+=1
             if word in self.vision_words: visionCount+=1
         return (basicCount>0, armCount>0, visionCount>0)
-    
+
+
     def promptBuilder(self, categ, command):
         bNeed, aNeed, vNeed = categ[0], categ[1], categ[2]
         code = self.visionCode * vNeed + self.movementCode * bNeed + self.armCode * aNeed + self.generalCode * (1 if bNeed+aNeed+vNeed==0 else 0)
-        commandPreferencer = 'Following is an input statement via voice given to you SPOT the robotic dog, please interpret the command ' \
-        'as you would think that a person talking to SPOT the robotic dog which has four legs, an arm with a gripper on the back, as well as ' \
-        'cameras on the front, side, and back would. Input: ' + command + ' '
-        codeGenerationPrompter = 'Using the following working code as your reference create working code which expertly follows the command and when done' \
-        'makes sure the robot is safely sitting down with its arm put away. Make sure each method exists and is correct according to uses in the ROS2 SPOT API Wrapper.' \
-        'Remember for full functionality make sure you are using the wrapper and its services.'
+ 
